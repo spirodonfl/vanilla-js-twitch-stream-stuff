@@ -1,0 +1,35 @@
+* {
+    box-sizing: border-box;
+}
+body {
+    background-color: green;
+    font-family: Cascadia Mono;
+}
+
+.text-shadow {
+    text-shadow: 0px 0px 3px black, 0px 0px 3px black, 0px 0px 3px black, 0px 0px 3px black;
+}
+#twitch_stats {
+    display: none;
+}
+#notification {
+    display: none;
+    color: white;
+    padding: 40px;
+    font-size: 32px;
+    background-image: url('');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 256px;
+    height: 256px;
+    margin: 0px auto;
+    text-align: center;
+    line-height: 60px;
+}
+#subscription_goal_wrapper, #follower_goal_wrapper {
+    text-align: center;
+    color: white;
+    background-color: rgba(200,200,200,0.0);
+    font-size: 4em;
+    padding: 0.2em 0.4em;
+}

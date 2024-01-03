@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <title>TWITCH</title>
+    </head>
+    <link rel="stylesheet" href="main.css" />
+    <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
+    <script src="main.js"></script>
+    <script src="twitch-websocket.js"></script>
+    <script src="run.js"></script>
+    <script type="text/hyperscript">
+        behavior submitTwitchSecretsForm
+            on click
+                set twitchClientId to value of <#twitch_client_id/>
+                set twitchClientSecret to value of <#twitch_client_secret/>
+                set poops to <#twitch_client_secrets_form/>
+                set poopsmore to <#twitch_stats/>
+                if twitchClientId is not null and twitchClientSecret is not null
+                    js(twitchClientId) CLIENT_ID = twitchClientId; end
+                    js(twitchClientSecret) CLIENT_SECRET = twitchClientSecret; end
+                    set *display of poops to 'none'
+                    set *display of poopsmore to 'block'
+                    js buildAuthorizationUrl(); document.getElementById('twitch_auth_link').href = buildAuthorizationUrl(); end
+                    js if (AUTHENTICATION_CODE !== null) { initiateConnection(); } end
+                end
+            end
+        end
+    </script>
+    <body>
+        <div style="display: grid; grid-auto-flow: column;">
+            <a href="" id="twitch_auth_link">AUTH</a>
+            <div onclick="connect();">Websocket Connect</div>
+            <input type="text" id="youtube_subscribers" placeholder="Youtube Subscribers" value="" />
+            <input type="text" id="youtube_followers" placeholder="Youtube Followers" value="" />
+        </div>
+        <div id="twitch_client_secrets_form">
+            <input type="password" id="twitch_client_id" placeholder="Twitch Client ID" value="" />
+            <input type="password" id="twitch_client_secret" placeholder="Twitch Client Secret" value="" />
+            <input type="button" id="twitch_submit_secrets" value="Submit" _="install submitTwitchSecretsForm" />
+        </div>
+        <div id="twitch_stats" class="text-shadow">
+            <div id="subscription_goal_wrapper">
+                Subscription Goal! <span id="current_subscribers">0</span>/<span id="target_subscribers">69420</span>
+            </div>
+            <div id="follower_goal_wrapper">
+                Follower Goal! <span id="current_followers">0</span>/<span id="target_followers">69420</span>
+            </div>
+            <div id="notification"></div>
+        </div>
+    </body>
+</html>
