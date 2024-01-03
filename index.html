@@ -29,8 +29,11 @@
         <div style="display: grid; grid-auto-flow: column;">
             <a href="" id="twitch_auth_link">AUTH</a>
             <div onclick="connect();">Websocket Connect</div>
-            <input type="text" id="youtube_subscribers" placeholder="Youtube Subscribers" value="" />
-            <input type="text" id="youtube_followers" placeholder="Youtube Followers" value="" />
+            <input type="text" id="input_youtube_current_subscribers" placeholder="Youtube Current Subscribers" value="" />
+            <input type="text" id="input_youtube_current_followers" placeholder="Youtube Current Followers" value="" />
+            <input type="text" id="input_youtube_target_subscribers" placeholder="Youtube Target Subscribers" value="" />
+            <input type="text" id="input_youtube_target_followers" placeholder="Youtube Target Followers" value="" />
+            <div onclick="updateFollowersSubscribers();">Update f/s</div>
         </div>
         <div id="twitch_client_secrets_form">
             <input type="password" id="twitch_client_id" placeholder="Twitch Client ID" value="" />
@@ -39,10 +42,16 @@
         </div>
         <div id="twitch_stats" class="text-shadow">
             <div id="subscription_goal_wrapper">
-                Subscription Goal! <span id="current_subscribers">0</span>/<span id="target_subscribers">69420</span>
+                Twitch Subscription Goal <span id="twitch_current_subscribers">0</span>/<span id="twitch_target_subscribers">69420</span>
             </div>
             <div id="follower_goal_wrapper">
-                Follower Goal! <span id="current_followers">0</span>/<span id="target_followers">69420</span>
+                Twitch Follower Goal <span id="twitch_current_followers">0</span>/<span id="twitch_target_followers">69420</span>
+            </div>
+            <div id="subscription_goal_wrapper">
+                YouTube Subscription Goal <span id="youtube_current_subscribers">0</span>/<span id="youtube_target_subscribers">69420</span>
+            </div>
+            <div id="follower_goal_wrapper">
+                YouTube Follower Goal <span id="youtube_current_followers">0</span>/<span id="youtube_target_followers">69420</span>
             </div>
             <div id="notification"></div>
         </div>

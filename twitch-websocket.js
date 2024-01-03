@@ -1,4 +1,59 @@
 var ws = null;
+function updateFollowersSubscribers() {
+    fetch('https://api.twitch.tv/helix/goals?broadcaster_id=' + USER_DATA.id, {
+        method: 'GET',
+        headers: {
+            'Client-ID': CLIENT_ID,
+            'Authorization': 'Bearer ' + AUTHENTICATION_CODE
+        }
+    }).then(function(response) {
+        console.log('HELIX BROADCASTER RESPONSE:', response);
+        return response.json();
+    }).then(function(response) {
+        console.log(response);
+        for (var i = 0; i < response.data.length; ++i) {
+            var data = response.data[i];
+            if (data.type === 'subscription_count') {
+                document.getElementById('twitch_current_subscribers').innerHTML = data.current_amount;
+                document.getElementById('twitch_target_subscribers').innerHTML = data.target_amount;
+            } else if (data.type === 'follower') {
+                document.getElementById('twitch_current_followers').innerHTML = data.current_amount;
+                document.getElementById('twitch_target_followers').innerHTML = data.target_amount;
+            }
+        }
+    }).catch(function(error) {
+        console.log(error);
+    });
+
+    var youtube_current_followers = document.getElementById('input_youtube_current_followers').value;
+    if (youtube_current_followers) {
+        youtube_current_followers = parseInt(youtube_current_followers);
+    } else {
+        youtube_current_followers = 0;
+    }
+    var youtube_current_subscribers = document.getElementById('input_youtube_current_subscribers').value;
+    if (youtube_current_subscribers) {
+        youtube_current_subscribers = parseInt(youtube_current_subscribers);
+    } else {
+        youtube_current_subscribers = 0;
+    }
+    var youtube_target_followers = document.getElementById('input_youtube_target_followers').value;
+    if (youtube_target_followers) {
+        youtube_target_followers = parseInt(youtube_target_followers);
+    } else {
+        youtube_target_followers = 0;
+    }
+    var youtube_target_subscribers = document.getElementById('input_youtube_target_subscribers').value;
+    if (youtube_target_subscribers) {
+        youtube_target_subscribers = parseInt(youtube_target_subscribers);
+    } else {
+        youtube_target_subscribers = 0;
+    }
+    document.getElementById('youtube_current_followers').innerHTML = youtube_current_followers;
+    document.getElementById('youtube_current_subscribers').innerHTML = youtube_current_subscribers;
+    document.getElementById('youtube_target_followers').innerHTML = youtube_target_followers;
+    document.getElementById('youtube_target_subscribers').innerHTML = youtube_target_subscribers;
+}
 function connect() {
     ws = new WebSocket('wss://eventsub.wss.twitch.tv/ws?keepalive_timeout_seconds=30');
     // Listen for the connection open event then call the subscribe function
@@ -272,42 +327,7 @@ function connect() {
                 }).catch(function(error) {
                     console.log(error);
                 });
-                fetch('https://api.twitch.tv/helix/goals?broadcaster_id=' + USER_DATA.id, {
-                    method: 'GET',
-                    headers: {
-                        'Client-ID': CLIENT_ID,
-                        'Authorization': 'Bearer ' + AUTHENTICATION_CODE
-                    }
-                }).then(function(response) {
-                    console.log('HELIX BROADCASTER RESPONSE:', response);
-                    return response.json();
-                }).then(function(response) {
-                    console.log(response);
-                    var youtube_followers = document.getElementById('youtube_followers').value;
-                    if (youtube_followers) {
-                        youtube_followers = parseInt(youtube_followers);
-                    } else {
-                        youtube_followers = 0;
-                    }
-                    var youtube_subscribers = document.getElementById('youtube_subscribers').value;
-                    if (youtube_subscribers) {
-                        youtube_subscribers = parseInt(youtube_subscribers);
-                    } else {
-                        youtube_subscribers = 0;
-                    }
-                    for (var i = 0; i < response.data.length; ++i) {
-                        var data = response.data[i];
-                        if (data.type === 'new_subscription_count') {
-                            document.getElementById('current_subscribers').innerHTML = (data.current_amount + youtube_subscribers);
-                            document.getElementById('target_subscribers').innerHTML = data.target_amount;
-                        } else if (data.type === 'follower') {
-                            document.getElementById('current_followers').innerHTML = (data.current_amount + youtube_followers);
-                            document.getElementById('target_followers').innerHTML = data.target_amount;
-                        }
-                    }
-                }).catch(function(error) {
-                    console.log(error);
-                });
+                updateFollowersSubscribers();
             } else if (event_data.metadata.subscription_type === "channel.follow") {
                 fetch('https://api.twitch.tv/helix/users?id=' + event_data.payload.event.user_id, {
                     method: 'GET',
@@ -325,42 +345,7 @@ function connect() {
                 }).catch(function(error) {
                     console.log(error);
                 });
-                fetch('https://api.twitch.tv/helix/goals?broadcaster_id=' + USER_DATA.id, {
-                    method: 'GET',
-                    headers: {
-                        'Client-ID': CLIENT_ID,
-                        'Authorization': 'Bearer ' + AUTHENTICATION_CODE
-                    }
-                }).then(function(response) {
-                    console.log('HELIX BROADCASTER RESPONSE:', response);
-                    return response.json();
-                }).then(function(response) {
-                    console.log(response);
-                    var youtube_followers = document.getElementById('youtube_followers').value;
-                    if (youtube_followers) {
-                        youtube_followers = parseInt(youtube_followers);
-                    } else {
-                        youtube_followers = 0;
-                    }
-                    var youtube_subscribers = document.getElementById('youtube_subscribers').value;
-                    if (youtube_subscribers) {
-                        youtube_subscribers = parseInt(youtube_subscribers);
-                    } else {
-                        youtube_subscribers = 0;
-                    }
-                    for (var i = 0; i < response.data.length; ++i) {
-                        var data = response.data[i];
-                        if (data.type === 'new_subscription_count') {
-                            document.getElementById('current_subscribers').innerHTML = (data.current_amount + youtube_subscribers);
-                            document.getElementById('target_subscribers').innerHTML = data.target_amount;
-                        } else if (data.type === 'follower') {
-                            document.getElementById('current_followers').innerHTML = (data.current_amount + youtube_followers);
-                            document.getElementById('target_followers').innerHTML = data.target_amount;
-                        }
-                    }
-                }).catch(function(error) {
-                    console.log(error);
-                });
+                updateFollowersSubscribers();
             } else if (event_data.metadata.subscription_type === "channel.raid") {
                 fetch('https://api.twitch.tv/helix/users?id=' + event_data.payload.event.to_broadcaster_user_id, {
                     method: 'GET',
@@ -379,24 +364,12 @@ function connect() {
                     console.log(error);
                 });
             } else if (event_data.metadata.subscription_type === "channel.goal.progress") {
-                var youtube_followers = document.getElementById('youtube_followers').value;
-                if (youtube_followers) {
-                    youtube_followers = parseInt(youtube_followers);
-                } else {
-                    youtube_followers = 0;
-                }
-                var youtube_subscribers = document.getElementById('youtube_subscribers').value;
-                if (youtube_subscribers) {
-                    youtube_subscribers = parseInt(youtube_subscribers);
-                } else {
-                    youtube_subscribers = 0;
-                }
                 if (event_data.payload.event.type === 'new_subscription_count') {
-                    document.getElementById('current_subscribers').innerHTML = (event_data.payload.event.current_amount + youtube_subscribers);
-                    document.getElementById('target_subscribers').innerHTML = event_data.payload.event.target_amount;
+                    document.getElementById('twitch_current_subscribers').innerHTML = event_data.payload.event.current_amount;
+                    document.getElementById('twitch_target_subscribers').innerHTML = event_data.payload.event.target_amount;
                 } else if (event_data.payload.event.type === 'follow') {
-                    document.getElementById('current_followers').innerHTML = (event_data.payload.event.current_amount + youtube_followers);
-                    document.getElementById('target_followers').innerHTML = event_data.payload.event.target_amount;
+                    document.getElementById('twitch_current_followers').innerHTML = event_data.payload.event.current_amount;
+                    document.getElementById('twitch_target_followers').innerHTML = event_data.payload.event.target_amount;
                 }
             } else if (event_data.metadata.subscription_type === "channel.shoutout.receive") {
                 fetch('https://api.twitch.tv/helix/users?id=' + event_data.payload.event.from_broadcaster_user_id, {

@@ -23,11 +23,11 @@ body {
     width: 256px;
     height: 256px;
     margin: 0px auto;
-    text-align: center;
+    text-align: right;
     line-height: 60px;
 }
 #subscription_goal_wrapper, #follower_goal_wrapper {
-    text-align: center;
+    text-align: right;
     color: white;
     background-color: rgba(200,200,200,0.0);
     font-size: 4em;

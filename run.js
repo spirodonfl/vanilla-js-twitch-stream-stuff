@@ -32,30 +32,7 @@ function initiateConnection() {
         }).then(function(response) {
             console.log(response);
             USER_DATA = response.data[0];
-            fetch('https://api.twitch.tv/helix/goals?broadcaster_id=' + USER_DATA.id, {
-                method: 'GET',
-                headers: {
-                    'Client-ID': CLIENT_ID,
-                    'Authorization': 'Bearer ' + AUTHENTICATION_CODE
-                }
-            }).then(function(response) {
-                console.log('HELIX BROADCASTER RESPONSE:', response);
-                return response.json();
-            }).then(function(response) {
-                console.log(response);
-                for (var i = 0; i < response.data.length; ++i) {
-                    var data = response.data[i];
-                    if (data.type === 'new_subscription_count') {
-                        document.getElementById('current_subscribers').innerHTML = data.current_amount;
-                        document.getElementById('target_subscribers').innerHTML = data.target_amount;
-                    } else if (data.type === 'follower') {
-                        document.getElementById('current_followers').innerHTML = data.current_amount;
-                        document.getElementById('target_followers').innerHTML = data.target_amount;
-                    }
-                }
-            }).catch(function(error) {
-                console.log(error);
-            });
+            updateFollowersSubscribers();
         }).catch(function(error) {
             console.log(error);
         });
